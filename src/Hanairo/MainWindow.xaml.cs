@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Microsoft.Win32;
 
 namespace Hanairo;
@@ -12,7 +13,7 @@ public partial class MainWindow : Window
 {
     private readonly IconStore store;
     private readonly ObservableCollection<Target> queue = [];
-    private BitmapSource? artwork;
+    private IconComposition? artwork;
     private string[] report = [];
     private bool readingMenuState;
 
@@ -20,6 +21,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         store = new IconStore();
+        VersionLabel.Text = $"Hanairo  ·  {typeof(MainWindow).Assembly.GetName().Version!.ToString(3)}";
         QueueList.ItemsSource = queue;
         UpdateQueue();
         UpdateHistory();
@@ -261,20 +263,35 @@ public partial class MainWindow : Window
             ImportImage(dialog.FileName);
     }
 
-    private void ImportImage(string path) => Run(() => SetArtwork(IconImage.Load(path), Path.GetFileName(path)));
+    private void ImportImage(string path) => Run(() =>
+        EditImage(new IconComposition(IconImage.LoadSource(path)), Path.GetFileName(path)));
+
+    private void EditImage_Click(object sender, RoutedEventArgs e)
+    {
+        if (artwork is { } composition)
+            Run(() => EditImage(composition, ImageName.Text));
+    }
+
+    private void EditImage(IconComposition composition, string name)
+    {
+        var editor = new IconEditor(composition, name) { Owner = this };
+        if (editor.ShowDialog() == true)
+            SetArtwork(editor.Composition, name);
+    }
 
     private void Preset_Click(object sender, RoutedEventArgs e)
     {
         var button = (Button)sender;
         string key = (string)button.Tag;
-        Run(() => SetArtwork(IconImage.FromAsset($"{key}.png"), (string)button.ToolTip));
+        Run(() => SetArtwork(new IconComposition(IconImage.FromAsset($"{key}.png")), (string)button.ToolTip));
     }
 
-    private void SetArtwork(BitmapSource source, string name)
+    private void SetArtwork(IconComposition composition, string name)
     {
-        artwork = source;
-        IconPreview.Source = source;
+        IconPreview.Source = IconImage.Render(composition, 96);
+        artwork = composition;
         ImageHint.Visibility = Visibility.Collapsed;
+        EditImageButton.Visibility = Visibility.Visible;
         ImageName.Text = name;
         ImageName.ToolTip = name;
         UpdateQueue();
@@ -298,11 +315,11 @@ public partial class MainWindow : Window
 
     private void Image_Drop(object sender, DragEventArgs e)
     {
+        e.Handled = true;
         if (DroppedPaths(e) is [var path])
-            ImportImage(path);
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, () => ImportImage(path));
         else
             SetStatus("请一次拖入一张图片。");
-        e.Handled = true;
     }
 
     private void Apply_Click(object sender, RoutedEventArgs e)

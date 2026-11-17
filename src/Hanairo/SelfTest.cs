@@ -1,6 +1,10 @@
+using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Hanairo;
 
@@ -32,6 +36,8 @@ internal static class SelfTest
         string cat = store.SaveIcon(IconImage.Encode(IconImage.FromAsset("cat.png")));
         Check(IconImage.Load(cat).PixelWidth == 256, "应用生成的多尺寸 ICO 无法重新导入。");
         log.WriteLine("PASS ICO encoding and reimport");
+        CheckImageEditing(root);
+        log.WriteLine("PASS PNG import, transparent fit, zoom and drag crop, exact preview-to-ICO pixels");
 
         string folder = Directory.CreateDirectory(Path.Combine(root, "换装测试文件夹")).FullName;
         string ini = Path.Combine(folder, "desktop.ini");
@@ -127,6 +133,83 @@ internal static class SelfTest
             log.WriteLine("PASS Windows drive icon discovery and registry restore");
         }
         Check(new IconStore(data).Entries.Count == 0, "复原后仍有活动记录。");
+    }
+
+    private static void CheckImageEditing(string scratch)
+    {
+        const int width = 480;
+        const int height = 240;
+        var pixels = new byte[width * height * 4];
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int index = (y * width + x) * 4;
+                pixels[index] = x < width / 2 ? (byte)0 : (byte)255;
+                pixels[index + 2] = x < width / 2 ? (byte)255 : (byte)0;
+                pixels[index + 3] = 255;
+            }
+        }
+
+        string path = Path.Combine(scratch, "裁剪样例.png");
+        var encoder = new PngBitmapEncoder();
+        var bitmap = BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null, pixels, width * 4);
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using (var stream = File.Create(path))
+            encoder.Save(stream);
+
+        byte[] input = File.ReadAllBytes(path);
+        BitmapSource source = IconImage.LoadSource(path);
+        Check(source.PixelWidth == width && source.PixelHeight == height, "图片导入后丢失原始比例或裁剪分辨率。");
+        var fit = new IconComposition(source);
+        BitmapSource fitted = IconImage.Render(fit, 32);
+        Check(Pixel(fitted, 0, 0) == Color.FromArgb(0, 0, 0, 0) &&
+            Pixel(fitted, 5, 16) == Colors.Red, "适应画布时应保留完整图片和透明留白。");
+
+        var center = new Point(0.5, 0.5);
+        var filled = new IconComposition(source, fit.FillZoom);
+        var left = filled.Move(10, 4);
+        var right = filled.Move(-10, -4);
+        Check(Pixel(IconImage.Render(left, 32), 10, 10) == Colors.Red &&
+            Pixel(IconImage.Render(right, 32), 10, 10) == Colors.Blue &&
+            left.Y == 0 && right.Y == 0, "拖动裁剪应选择不同区域，并且填满时不能露出边缘。");
+        Check(filled.WithZoom(0.001, center).Zoom == IconComposition.MinZoom &&
+            fit.WithZoom(900, center).Zoom == fit.MaxZoom, "缩放超出有效范围。");
+
+        var anchor = new Point(0.55, 0.45);
+        Rect before = filled.Bounds(1);
+        Rect after = filled.WithZoom(4, anchor).Bounds(1);
+        Check(Math.Abs((anchor.X - before.X) / before.Width - (anchor.X - after.X) / after.Width) < 1e-9 &&
+            Math.Abs((anchor.Y - before.Y) / before.Height - (anchor.Y - after.Y) / after.Height) < 1e-9,
+            "滚轮缩放时光标对应的图片位置发生偏移。");
+
+        byte[] ico = IconImage.Encode(right);
+        foreach (int size in new[] { 16, 32, 48, 96, 256 })
+        {
+            int frames = BinaryPrimitives.ReadUInt16LittleEndian(ico.AsSpan(4));
+            int entry = Enumerable.Range(0, frames).Select(index => 6 + index * 16)
+                .First(index => ico[index] == (size == 256 ? 0 : size));
+            int count = BinaryPrimitives.ReadInt32LittleEndian(ico.AsSpan(entry + 8));
+            int offset = BinaryPrimitives.ReadInt32LittleEndian(ico.AsSpan(entry + 12));
+            using var frameStream = new MemoryStream(ico, offset, count);
+            var decoder = new PngBitmapDecoder(frameStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            var frame = new FormatConvertedBitmap(decoder.Frames[0], PixelFormats.Pbgra32, null, 0);
+            byte[] preview = new byte[size * size * 4];
+            byte[] output = new byte[preview.Length];
+            IconImage.Render(right, size).CopyPixels(preview, size * 4, 0);
+            frame.CopyPixels(output, size * 4, 0);
+            Check(output.SequenceEqual(preview), $"{size} 像素成品与导出的 ICO 不一致。");
+        }
+
+        Check(File.ReadAllBytes(path).SequenceEqual(input), "编辑操作写回了原始图片。");
+        File.Delete(path);
+    }
+
+    private static Color Pixel(BitmapSource bitmap, int x, int y)
+    {
+        byte[] pixel = new byte[4];
+        bitmap.CopyPixels(new Int32Rect(x, y, 1, 1), pixel, 4, 0);
+        return Color.FromArgb(pixel[3], pixel[2], pixel[1], pixel[0]);
     }
 
     private static void Check(bool condition, string message)

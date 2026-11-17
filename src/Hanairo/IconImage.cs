@@ -7,7 +7,9 @@ namespace Hanairo;
 
 internal static class IconImage
 {
-    public static BitmapSource Load(string path)
+    public static BitmapSource Load(string path) => Render(new IconComposition(LoadSource(path, 256)), 256);
+
+    public static BitmapSource LoadSource(string path, int maxSide = 4096)
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         if (stream.Length > 64 * 1024 * 1024)
@@ -21,8 +23,11 @@ internal static class IconImage
         if ((long)frame.PixelWidth * frame.PixelHeight > 80_000_000)
             throw new IOException("图片像素过多，请先缩小后导入。");
 
-        // Render before closing the input so an imported image can be moved or deleted immediately.
-        return Render(frame, 256);
+        // Decode before closing the file, preserving the original proportions for cropping.
+        double scale = Math.Min(1, maxSide / (double)Math.Max(frame.PixelWidth, frame.PixelHeight));
+        int width = Math.Max(1, (int)Math.Round(frame.PixelWidth * scale));
+        int height = Math.Max(1, (int)Math.Round(frame.PixelHeight * scale));
+        return Draw(frame, width, height, new Rect(0, 0, width, height));
     }
 
     public static BitmapSource FromAsset(string name)
@@ -32,14 +37,16 @@ internal static class IconImage
         return source;
     }
 
-    public static byte[] Encode(BitmapSource source)
+    public static byte[] Encode(BitmapSource source) => Encode(new IconComposition(source));
+
+    public static byte[] Encode(IconComposition composition)
     {
         int[] sizes = [16, 24, 32, 40, 48, 64, 96, 128, 256];
         var frames = new List<byte[]>(sizes.Length);
         foreach (int size in sizes)
         {
             var png = new PngBitmapEncoder();
-            png.Frames.Add(BitmapFrame.Create(Render(source, size)));
+            png.Frames.Add(BitmapFrame.Create(Render(composition, size)));
             using var frame = new MemoryStream();
             png.Save(frame);
             frames.Add(frame.ToArray());
@@ -70,17 +77,17 @@ internal static class IconImage
         return output.ToArray();
     }
 
-    private static BitmapSource Render(BitmapSource source, int size)
+    public static BitmapSource Render(IconComposition composition, int size) =>
+        Draw(composition.Source, size, size, composition.Bounds(size));
+
+    private static BitmapSource Draw(BitmapSource source, int width, int height, Rect bounds)
     {
-        double scale = size / (double)Math.Max(source.PixelWidth, source.PixelHeight);
-        double width = source.PixelWidth * scale;
-        double height = source.PixelHeight * scale;
         var visual = new DrawingVisual();
         RenderOptions.SetBitmapScalingMode(visual, BitmapScalingMode.HighQuality);
         using (var drawing = visual.RenderOpen())
-            drawing.DrawImage(source, new Rect((size - width) / 2, (size - height) / 2, width, height));
+            drawing.DrawImage(source, bounds);
 
-        var bitmap = new RenderTargetBitmap(size, size, 96, 96, PixelFormats.Pbgra32);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
         bitmap.Freeze();
         return bitmap;

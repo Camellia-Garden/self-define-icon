@@ -30,7 +30,7 @@
                             <TextBlock Text="刷新系统图标" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <TextBlock Text="Hanairo  ·  1.0" Style="{StaticResource Caption}" Margin="12,9,0,2"/>
+                    <TextBlock x:Name="VersionLabel" Style="{StaticResource Caption}" Margin="12,9,0,2"/>
                 </StackPanel>
                 <StackPanel>
                     <RadioButton x:Name="WorkbenchTab" Style="{StaticResource Nav}" GroupName="Page" IsChecked="True"
@@ -171,8 +171,12 @@
                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
-                                    <TextBlock x:Name="ImageName" Style="{StaticResource Caption}" TextTrimming="CharacterEllipsis"
-                                               TextWrapping="NoWrap" Margin="0,8,0,0"/>
+                                    <DockPanel Margin="0,7,0,0">
+                                        <Button x:Name="EditImageButton" DockPanel.Dock="Right" Content="编辑图片" Click="EditImage_Click"
+                                                Style="{StaticResource Quiet}" MinHeight="28" Padding="7,3" Visibility="Collapsed"/>
+                                        <TextBlock x:Name="ImageName" Style="{StaticResource Caption}" TextTrimming="CharacterEllipsis"
+                                                   TextWrapping="NoWrap" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    </DockPanel>
                                     <TextBlock Text="内置贴纸" FontWeight="DemiBold" FontSize="12" Margin="0,12,0,6"/>
                                     <UniformGrid Columns="4">
                                         <Button Tag="star" Click="Preset_Click" ToolTip="樱花星" AutomationProperties.Name="樱花星"
