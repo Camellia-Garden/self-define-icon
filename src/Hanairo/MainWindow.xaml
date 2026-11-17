@@ -1,0 +1,273 @@
+<Window x:Class="Hanairo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="花色图标工房" Icon="/Assets/Hanairo.ico"
+        Width="1160" Height="790" MinWidth="860" MinHeight="610"
+        WindowStartupLocation="CenterScreen" UseLayoutRounding="True"
+        FontFamily="Segoe UI, Microsoft YaHei UI" FontSize="14" Background="#F9F4FB"
+        Foreground="{StaticResource Ink}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="193"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Background="#FFFBFE" BorderBrush="#E9DCEC" BorderThickness="0,0,1,0" Padding="15,23,15,15">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="1,1,0,27">
+                    <Border Background="#F6E5F4" Width="42" Height="42" CornerRadius="12">
+                        <Image Source="/Assets/star.png" Width="40" Height="40"/>
+                    </Border>
+                    <StackPanel Margin="9,2,0,0">
+                        <TextBlock Text="花色图标工房" FontWeight="DemiBold" FontSize="15"/>
+                        <TextBlock Text="HANAIRO" FontFamily="Georgia" Foreground="#88508E" FontSize="10" Margin="1,4,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Button Style="{StaticResource Quiet}" HorizontalContentAlignment="Left"
+                            Click="RefreshShell_Click" ToolTip="请求资源管理器、桌面和任务栏刷新缓存">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE72C;" VerticalAlignment="Center"/>
+                            <TextBlock Text="刷新系统图标" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Hanairo  ·  1.0" Style="{StaticResource Caption}" Margin="12,9,0,2"/>
+                </StackPanel>
+                <StackPanel>
+                    <RadioButton x:Name="WorkbenchTab" Style="{StaticResource Nav}" GroupName="Page" IsChecked="True"
+                                 Checked="OpenWorkbench_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE945;" VerticalAlignment="Center"/>
+                            <TextBlock Text="换装工作台" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" Margin="11,0,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="HistoryTab" Style="{StaticResource Nav}" GroupName="Page" Checked="OpenHistory_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE81C;" VerticalAlignment="Center"/>
+                            <TextBlock Text="复原记录" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" Margin="11,0,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="SettingsTab" Style="{StaticResource Nav}" GroupName="Page" Checked="OpenSettings_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" VerticalAlignment="Center"/>
+                            <TextBlock Text="右键与设置" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" Margin="11,0,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FAF3F9" Offset="0"/>
+                    <GradientStop Color="#F3F0FC" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer x:Name="PageScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="22,20,22,17">
+                    <StackPanel x:Name="WorkbenchPage">
+                        <Border CornerRadius="21" Height="200" Margin="0,0,0,16" BorderBrush="#E0CCE9" BorderThickness="1">
+                            <Border.Background>
+                                <ImageBrush ImageSource="/Assets/atelier.jpg" Stretch="UniformToFill" Viewbox="0,0,1,.74"/>
+                            </Border.Background>
+                            <Border CornerRadius="20" Padding="25,21" VerticalAlignment="Stretch">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#FFFAEAF6" Offset="0"/>
+                                        <GradientStop Color="#F8FAEAF6" Offset=".28"/>
+                                        <GradientStop Color="#B2FAEAF6" Offset=".43"/>
+                                        <GradientStop Color="#00FAEAF6" Offset=".65"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" MaxWidth="375">
+                                    <TextBlock Text="花色图标工房" FontSize="35" FontWeight="Bold" Foreground="#37243F"/>
+                                    <TextBlock Text="给文件夹、快捷方式和盘符换上喜欢的图标。"
+                                               TextWrapping="Wrap" Margin="1,8,0,15" Foreground="#584363"/>
+                                    <Button Content="导入图片" Click="Import_Click" Style="{StaticResource Primary}"
+                                            HorizontalAlignment="Left" Padding="19,7"/>
+                                </StackPanel>
+                            </Border>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="285"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Card}" AllowDrop="True" Drop="Targets_Drop" DragOver="File_DragOver">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,5">
+                                        <Button x:Name="ClearButton" DockPanel.Dock="Right" Style="{StaticResource Quiet}"
+                                                Content="清空" Click="Clear_Click" Margin="0,-3,0,0"/>
+                                        <TextBlock Text="换装目标" Style="{StaticResource Title}" VerticalAlignment="Center"/>
+                                    </DockPanel>
+                                    <TextBlock Text="添加或拖入文件夹、文件和快捷方式。" Style="{StaticResource Caption}" Margin="0,0,0,13"/>
+                                    <WrapPanel Margin="0,0,0,10">
+                                        <Button Content="+ 文件" Click="Files_Click" Margin="0,0,6,6"/>
+                                        <Button Content="+ 文件夹" Click="Folders_Click" Margin="0,0,6,6"/>
+                                        <Button Content="+ 盘符" Click="Drives_Click" Margin="0,0,6,6"/>
+                                        <Button Content="+ 任务栏固定项" Click="Pinned_Click" Margin="0,0,0,6"/>
+                                    </WrapPanel>
+                                    <CheckBox x:Name="SyncPinCheck" Content="同时添加匹配的任务栏固定项"
+                                              IsChecked="True" Margin="1,0,0,12"
+                                              ToolTip="当程序路径和启动参数能唯一匹配时，将对应固定项加入可见的队列。"/>
+                                    <Border x:Name="DropHint" BorderBrush="#EADCEE" BorderThickness="1"
+                                            Background="#FBF5FC" CornerRadius="14" MinHeight="148">
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12">
+                                            <Image Source="/Assets/folder.png" Height="55" Width="55"/>
+                                            <TextBlock Text="把目标拖到这里" FontWeight="DemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="一张图片可以一次应用到多个目标" Style="{StaticResource Caption}"
+                                                       Margin="0,5,0,0" TextAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <ItemsControl x:Name="QueueList">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#FBF5FC" BorderBrush="#EADCEE" BorderThickness="1"
+                                                        CornerRadius="10" Padding="9,7" Margin="0,0,0,6">
+                                                    <DockPanel>
+                                                        <Button Content="&#xE711;" DockPanel.Dock="Right" ToolTip="移除目标"
+                                                                AutomationProperties.Name="移除目标" FontFamily="Segoe MDL2 Assets"
+                                                                Style="{StaticResource Quiet}" Padding="8,3" Click="Remove_Click"/>
+                                                        <Border DockPanel.Dock="Left" Width="34" Height="34" Background="#F1E5F8"
+                                                                CornerRadius="9" Margin="0,0,9,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets"
+                                                                       Foreground="{StaticResource Plum}" FontSize="16"
+                                                                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                        <StackPanel VerticalAlignment="Center" ToolTip="{Binding Path}">
+                                                            <TextBlock Text="{Binding Name}" FontWeight="DemiBold" TextTrimming="CharacterEllipsis"/>
+                                                            <TextBlock Text="{Binding Label}" Style="{StaticResource Caption}"/>
+                                                        </StackPanel>
+                                                    </DockPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock x:Name="FileHint" Text="普通文件将在同目录生成带新图标的快捷方式。"
+                                               Style="{StaticResource Caption}" Margin="0,5,0,0" Visibility="Collapsed"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top"
+                                    AllowDrop="True" Drop="Image_Drop" DragOver="File_DragOver">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,11">
+                                        <Button DockPanel.Dock="Right" Content="导入" Style="{StaticResource Quiet}"
+                                                Click="Import_Click" Margin="0,-4,0,0"/>
+                                        <TextBlock Text="图标预览" Style="{StaticResource Title}" VerticalAlignment="Center"/>
+                                    </DockPanel>
+                                    <Border Background="#F6ECFB" BorderBrush="#EDDEF2" BorderThickness="1" CornerRadius="14" Height="91">
+                                        <Grid>
+                                            <Image x:Name="IconPreview" Width="70" Height="70"
+                                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            <TextBlock x:Name="ImageHint" Text="把图片拖到这里" Style="{StaticResource Caption}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <TextBlock x:Name="ImageName" Style="{StaticResource Caption}" TextTrimming="CharacterEllipsis"
+                                               TextWrapping="NoWrap" Margin="0,8,0,0"/>
+                                    <TextBlock Text="内置贴纸" FontWeight="DemiBold" FontSize="12" Margin="0,12,0,6"/>
+                                    <UniformGrid Columns="4">
+                                        <Button Tag="star" Click="Preset_Click" ToolTip="樱花星" AutomationProperties.Name="樱花星"
+                                                Padding="1" Margin="0,0,5,0"><Image Source="/Assets/star.png" Width="30" Height="30"/></Button>
+                                        <Button Tag="cat" Click="Preset_Click" ToolTip="奶油猫" AutomationProperties.Name="奶油猫"
+                                                Padding="1" Margin="0,0,5,0"><Image Source="/Assets/cat.png" Width="30" Height="30"/></Button>
+                                        <Button Tag="folder" Click="Preset_Click" ToolTip="薄荷文件夹" AutomationProperties.Name="薄荷文件夹"
+                                                Padding="1" Margin="0,0,5,0"><Image Source="/Assets/folder.png" Width="30" Height="30"/></Button>
+                                        <Button Tag="disk" Click="Preset_Click" ToolTip="紫藤磁盘" AutomationProperties.Name="紫藤磁盘"
+                                                Padding="1"><Image Source="/Assets/disk.png" Width="30" Height="30"/></Button>
+                                    </UniformGrid>
+                                    <Button x:Name="ApplyButton" Content="应用图标" Style="{StaticResource Primary}"
+                                            Margin="0,14,0,0" Click="Apply_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel x:Name="HistoryPage" Visibility="Collapsed">
+                        <Border Style="{StaticResource Card}" Padding="23">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,7">
+                                    <Button x:Name="RestoreAllButton" DockPanel.Dock="Right" Click="RestoreAll_Click"
+                                            Content="全部复原" Style="{StaticResource Primary}"/>
+                                    <TextBlock Text="复原记录" Style="{StaticResource Title}" VerticalAlignment="Center"/>
+                                </DockPanel>
+                                <TextBlock Text="复原到该目标第一次换装之前的图标。" Style="{StaticResource Caption}" Margin="0,0,0,16"/>
+                                <Border x:Name="HistoryHint" Background="#FAF2FB" CornerRadius="14" Padding="18">
+                                    <TextBlock Text="应用图标后，复原记录会出现在这里。" Style="{StaticResource Caption}"/>
+                                </Border>
+                                <ItemsControl x:Name="HistoryList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="12" Background="#FAF3FC" BorderBrush="#EDDEF2"
+                                                    BorderThickness="1" Padding="10" Margin="0,0,0,8">
+                                                <DockPanel>
+                                                    <Button Content="复原" DockPanel.Dock="Right" Click="RestoreOne_Click" Margin="9,0,0,0"/>
+                                                    <Border Width="42" Height="42" DockPanel.Dock="Left" CornerRadius="10"
+                                                            Background="#EEE2F6" Margin="0,0,10,0">
+                                                        <Image Source="{Binding Preview}" Width="33" Height="33"/>
+                                                    </Border>
+                                                    <StackPanel VerticalAlignment="Center" ToolTip="{Binding Entry.Location}">
+                                                        <TextBlock Text="{Binding Entry.Target.Name}" FontWeight="DemiBold"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding Entry.Location}" Style="{StaticResource Caption}"
+                                                                   TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel x:Name="SettingsPage" Visibility="Collapsed">
+                        <Border Style="{StaticResource Card}" Padding="23" Margin="0,0,0,13">
+                            <StackPanel>
+                                <TextBlock Text="右键与设置" Style="{StaticResource Title}" Margin="0,0,0,14"/>
+                                <CheckBox x:Name="ContextMenuCheck" Content="在资源管理器右键菜单中显示「更换图标」"
+                                          AutomationProperties.Name="启用右键菜单" Checked="ContextMenu_Changed"
+                                          Unchecked="ContextMenu_Changed" FontWeight="DemiBold"/>
+                                <TextBlock Text="Windows 11 可在「显示更多选项」中找到。右键一个项目后，工房会把它加入换装目标。"
+                                           Style="{StaticResource Caption}" Margin="0,9,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Padding="23" Margin="0,0,0,13">
+                            <StackPanel>
+                                <TextBlock Text="任务栏与导航窗格" FontSize="17" FontWeight="DemiBold"/>
+                                <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                           Text="工房会将唯一匹配的任务栏固定项加入队列，也可手动添加。应用后工房会请求 Windows 刷新。应用运行中的图标、系统按钮和托盘由 Windows 或应用管理。"/>
+                                <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                           Text="导航窗格沿用 Windows 的文件夹和盘符图标。遇到旧缓存时，可先按 F5，或在左下角点「刷新系统图标」。"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Padding="23">
+                            <StackPanel>
+                                <TextBlock Text="本地数据" FontSize="17" FontWeight="DemiBold"/>
+                                <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                           Text="图标和复原记录保存在 %LOCALAPPDATA%\Hanairo。卸载前可在复原记录中点「全部复原」，再关闭右键菜单。"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <Border Grid.Row="1" Background="#FFFCFF" BorderBrush="#E9DCEC" BorderThickness="0,1,0,0" Padding="22,7">
+                <DockPanel>
+                    <Button x:Name="DetailsButton" DockPanel.Dock="Right" Style="{StaticResource Quiet}" Content="查看结果"
+                            Visibility="Collapsed" MinHeight="25" Padding="8,2" Click="Details_Click"/>
+                    <TextBlock x:Name="Status" Text="添加目标，再挑一张图片或内置贴纸。"
+                               Style="{StaticResource Caption}" VerticalAlignment="Center" MinHeight="22"/>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
