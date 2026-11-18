@@ -49,7 +49,7 @@ public partial class App : Application
         }
         catch (Exception error)
         {
-            MessageBox.Show(error.Message, "花色图标工房", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(error.Message, "Camellia的图标工坊", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(1);
         }
     }

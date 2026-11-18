@@ -3,7 +3,8 @@ using System.Windows.Media.Imaging;
 
 namespace Hanairo;
 
-internal sealed record IconComposition(BitmapSource Source, double Zoom = 1, double X = 0, double Y = 0)
+internal sealed record IconComposition(BitmapSource Source, double Zoom = 1, double X = 0, double Y = 0,
+    double CornerRadius = 0, double Padding = 0)
 {
     public const double MinZoom = 0.25;
     public double FillZoom => (double)Math.Max(Source.PixelWidth, Source.PixelHeight) /

@@ -361,7 +361,7 @@ internal sealed class IconStore
         for (int number = 1; number <= 999; number++)
         {
             string suffix = number == 1 ? "" : $" ({number})";
-            string path = Path.Combine(directory, $"{name} · 花色{suffix}.lnk");
+            string path = Path.Combine(directory, $"{name} · Camellia{suffix}.lnk");
             if (!File.Exists(path) && !Directory.Exists(path))
                 return path;
         }

@@ -77,15 +77,29 @@ internal static class IconImage
         return output.ToArray();
     }
 
-    public static BitmapSource Render(IconComposition composition, int size) =>
-        Draw(composition.Source, size, size, composition.Bounds(size));
+    public static BitmapSource Render(IconComposition composition, int size)
+    {
+        double inset = size * Math.Clamp(composition.Padding, 0, 0.2);
+        double innerSize = size - 2 * inset;
+        Rect bounds = composition.Bounds(innerSize);
+        bounds.Offset(inset, inset);
+        Rect visible = Rect.Intersect(bounds, new Rect(inset, inset, innerSize, innerSize));
+        double radius = Math.Min(visible.Width, visible.Height) * Math.Clamp(composition.CornerRadius, 0, 0.5);
+        return Draw(composition.Source, size, size, bounds, new RectangleGeometry(visible, radius, radius));
+    }
 
-    private static BitmapSource Draw(BitmapSource source, int width, int height, Rect bounds)
+    private static BitmapSource Draw(BitmapSource source, int width, int height, Rect bounds, Geometry? clip = null)
     {
         var visual = new DrawingVisual();
         RenderOptions.SetBitmapScalingMode(visual, BitmapScalingMode.HighQuality);
         using (var drawing = visual.RenderOpen())
+        {
+            if (clip != null)
+                drawing.PushClip(clip);
             drawing.DrawImage(source, bounds);
+            if (clip != null)
+                drawing.Pop();
+        }
 
         var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);

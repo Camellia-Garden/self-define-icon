@@ -19,7 +19,6 @@ public partial class IconEditor : Window
         InitializeComponent();
         ImageFileName.Text = fileName;
         ImageFileName.ToolTip = fileName;
-        SourceImage.Source = composition.Source;
         ZoomSlider.Minimum = Math.Log2(IconComposition.MinZoom);
         ZoomSlider.Maximum = Math.Log2(composition.MaxZoom);
         UpdateComposition(composition);
@@ -28,16 +27,16 @@ public partial class IconEditor : Window
     private void UpdateComposition(IconComposition composition)
     {
         Composition = composition;
-        Rect bounds = composition.Bounds(Viewport.Width);
-        SourceImage.Width = bounds.Width;
-        SourceImage.Height = bounds.Height;
-        System.Windows.Controls.Canvas.SetLeft(SourceImage, bounds.X);
-        System.Windows.Controls.Canvas.SetTop(SourceImage, bounds.Y);
+        SourceImage.Source = IconImage.Render(composition, (int)Viewport.Width);
 
         syncingSlider = true;
         ZoomSlider.Value = Math.Log2(composition.Zoom);
+        CornerSlider.Value = composition.CornerRadius * 100;
+        PaddingSlider.Value = composition.Padding * 100;
         syncingSlider = false;
         ZoomValue.Text = $"{composition.Zoom:P0}";
+        CornerValue.Text = $"{composition.CornerRadius:P0}";
+        PaddingValue.Text = $"{composition.Padding:P0}";
 
         LargePreview.Source = IconImage.Render(composition, 96);
         Preview16.Source = IconImage.Render(composition, 16);
@@ -58,15 +57,30 @@ public partial class IconEditor : Window
         UpdateComposition(Composition.WithZoom(Composition.Zoom * 1.25, Center));
 
     private void Fit_Click(object sender, RoutedEventArgs e) =>
-        UpdateComposition(new IconComposition(Composition.Source));
+        UpdateComposition(Composition with { Zoom = 1, X = 0, Y = 0 });
 
     private void Fill_Click(object sender, RoutedEventArgs e) =>
-        UpdateComposition(new IconComposition(Composition.Source, Composition.FillZoom));
+        UpdateComposition(Composition with { Zoom = Composition.FillZoom, X = 0, Y = 0 });
+
+    private void EdgeSlider_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (!syncingSlider)
+            UpdateComposition(Composition with
+            {
+                CornerRadius = CornerSlider.Value / 100,
+                Padding = PaddingSlider.Value / 100
+            });
+    }
+
+    private void ResetEdges_Click(object sender, RoutedEventArgs e) =>
+        UpdateComposition(Composition with { CornerRadius = 0, Padding = 0 });
 
     private void ZoomAtPointer(object sender, MouseWheelEventArgs e)
     {
         Point cursor = e.GetPosition(Viewport);
-        var anchor = new Point(cursor.X / Viewport.Width, cursor.Y / Viewport.Height);
+        double inset = Viewport.Width * Composition.Padding;
+        double innerSize = Viewport.Width - 2 * inset;
+        var anchor = new Point((cursor.X - inset) / innerSize, (cursor.Y - inset) / innerSize);
         UpdateComposition(Composition.WithZoom(Composition.Zoom * Math.Pow(1.15, e.Delta / 120.0), anchor));
         e.Handled = true;
     }
@@ -88,7 +102,8 @@ public partial class IconEditor : Window
             return;
 
         Vector delta = e.GetPosition(Viewport) - start;
-        var next = origin.Move(delta.X / Viewport.Width, delta.Y / Viewport.Height);
+        double innerSize = Viewport.Width * (1 - 2 * origin.Padding);
+        var next = origin.Move(delta.X / innerSize, delta.Y / innerSize);
         if (next != Composition)
             UpdateComposition(next);
     }

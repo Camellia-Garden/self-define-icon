@@ -55,7 +55,7 @@ internal static class Shell
             }
 
             using var verb = Registry.CurrentUser.CreateSubKey($@"{parentPath}\{Verb}");
-            verb.SetValue("", "更换图标 · 花色图标工房");
+            verb.SetValue("", "更换图标 · Camellia的图标工坊");
             verb.SetValue("Icon", $"\"{Environment.ProcessPath}\",0");
             verb.SetValue("MultiSelectModel", "Single");
             using var command = verb.CreateSubKey("command");

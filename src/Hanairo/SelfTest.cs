@@ -37,7 +37,7 @@ internal static class SelfTest
         Check(IconImage.Load(cat).PixelWidth == 256, "应用生成的多尺寸 ICO 无法重新导入。");
         log.WriteLine("PASS ICO encoding and reimport");
         CheckImageEditing(root);
-        log.WriteLine("PASS PNG import, transparent fit, zoom and drag crop, exact preview-to-ICO pixels");
+        log.WriteLine("PASS PNG import, crop, rounded corners, transparent padding, exact preview-to-ICO pixels");
 
         string folder = Directory.CreateDirectory(Path.Combine(root, "换装测试文件夹")).FullName;
         string ini = Path.Combine(folder, "desktop.ini");
@@ -114,13 +114,15 @@ internal static class SelfTest
         if (drive != null)
         {
             var driveTarget = Target.FromPath(drive);
-            var driveEntry = store.Apply(driveTarget, star);
+            string rounded = store.SaveIcon(IconImage.Encode(new IconComposition(
+                IconImage.FromAsset("folder.png"), CornerRadius: 0.25, Padding: 0.05)));
+            var driveEntry = store.Apply(driveTarget, rounded);
             try
             {
                 using var key = Shell.DriveIconKey(driveTarget.Path);
-                Check(Equals(key?.GetValue(""), $"{star},0"), "盘符注册表图标值错误。");
+                Check(Equals(key?.GetValue(""), $"{rounded},0"), "盘符注册表图标值错误。");
                 string? icon = ExplorerIconPath(driveTarget.Path);
-                Check(icon?.Contains(star, StringComparison.OrdinalIgnoreCase) == true,
+                Check(icon?.Contains(rounded, StringComparison.OrdinalIgnoreCase) == true,
                     $"Windows 未报告新的盘符图标位置，返回值为 {icon ?? "(null)"}。");
             }
             finally
@@ -130,7 +132,7 @@ internal static class SelfTest
 
             using var restored = Shell.DriveIconKey(driveTarget.Path);
             Check(Equals(restored?.GetValue(""), driveEntry.Original.RegistryValue), "盘符图标注册表值未复原。");
-            log.WriteLine("PASS Windows drive icon discovery and registry restore");
+            log.WriteLine("PASS rounded and padded Windows drive icon discovery and registry restore");
         }
         Check(new IconStore(data).Entries.Count == 0, "复原后仍有活动记录。");
     }
@@ -183,7 +185,18 @@ internal static class SelfTest
             Math.Abs((anchor.Y - before.Y) / before.Height - (anchor.Y - after.Y) / after.Height) < 1e-9,
             "滚轮缩放时光标对应的图片位置发生偏移。");
 
-        byte[] ico = IconImage.Encode(right);
+        var rounded = right with { CornerRadius = 0.25, Padding = 0.1 };
+        BitmapSource trimmed = IconImage.Render(rounded, 100);
+        Check(Pixel(trimmed, 0, 50).A == 0 && Pixel(trimmed, 10, 10).A == 0 &&
+            Pixel(trimmed, 50, 15) == Colors.Blue && Pixel(trimmed, 50, 50) == Colors.Blue,
+            "圆角和透明留边没有正确保留主体及透明边缘。");
+        BitmapSource roundFit = IconImage.Render(fit with { CornerRadius = 0.5 }, 100);
+        Check(Pixel(roundFit, 0, 25).A == 0 && Pixel(roundFit, 25, 50) == Colors.Red,
+            "长方形适应画布后的圆角应沿图片边界裁切。");
+        Check(rounded.WithZoom(3, center).CornerRadius == rounded.CornerRadius &&
+            rounded.Move(0.1, 0).Padding == rounded.Padding, "移动或缩放丢失了修边参数。");
+
+        byte[] ico = IconImage.Encode(rounded);
         foreach (int size in new[] { 16, 32, 48, 96, 256 })
         {
             int frames = BinaryPrimitives.ReadUInt16LittleEndian(ico.AsSpan(4));
@@ -193,10 +206,13 @@ internal static class SelfTest
             int offset = BinaryPrimitives.ReadInt32LittleEndian(ico.AsSpan(entry + 12));
             using var frameStream = new MemoryStream(ico, offset, count);
             var decoder = new PngBitmapDecoder(frameStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            var frame = new FormatConvertedBitmap(decoder.Frames[0], PixelFormats.Pbgra32, null, 0);
+            // PNG stores straight alpha. Compare both images in that format so
+            // premultiplication rounding at anti-aliased corners is excluded.
+            var frame = new FormatConvertedBitmap(decoder.Frames[0], PixelFormats.Bgra32, null, 0);
             byte[] preview = new byte[size * size * 4];
             byte[] output = new byte[preview.Length];
-            IconImage.Render(right, size).CopyPixels(preview, size * 4, 0);
+            new FormatConvertedBitmap(IconImage.Render(rounded, size), PixelFormats.Bgra32, null, 0)
+                .CopyPixels(preview, size * 4, 0);
             frame.CopyPixels(output, size * 4, 0);
             Check(output.SequenceEqual(preview), $"{size} 像素成品与导出的 ICO 不一致。");
         }

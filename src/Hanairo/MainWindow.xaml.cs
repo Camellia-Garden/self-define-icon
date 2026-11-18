@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         store = new IconStore();
-        VersionLabel.Text = $"Hanairo  ·  {typeof(MainWindow).Assembly.GetName().Version!.ToString(3)}";
+        VersionLabel.Text = $"Camellia  ·  {typeof(MainWindow).Assembly.GetName().Version!.ToString(3)}";
         QueueList.ItemsSource = queue;
         UpdateQueue();
         UpdateHistory();
