@@ -2,7 +2,7 @@
 
 粉紫色的 Windows 图标换装工具。把文件、文件夹、快捷方式或盘符加入队列，导入一张图片或选一枚内置贴纸，一次应用到多个目标。每项换装都有复原记录。
 
-[下载 Windows x64 便携版](https://github.com/Camellia-Garden/self-define-icon/releases/download/v1.3.0/Hanairo.exe) · [发布说明](https://github.com/Camellia-Garden/self-define-icon/releases/tag/v1.3.0)
+[下载 Windows x64 便携版](https://github.com/Camellia-Garden/self-define-icon/releases/download/v1.4.0/Hanairo.exe) · [发布说明](https://github.com/Camellia-Garden/self-define-icon/releases/tag/v1.4.0)
 
 ![Camellia的图标工坊工作台](docs/preview.webp)
 
@@ -45,6 +45,8 @@
 
 ## 进度与验收
 
+- **v1.4.0** · 顶部横幅改用用户提供的海边人物插画，保留原有左侧渐隐和透明叠层。人物与海景位于右侧，标题和导入按钮区域保持清晰。Windows 11 实测新横幅正常显示。
+
 - **v1.3.0** · 使用用户提供的插画作为整页半透明壁纸。参考 `E:\\wyfx\\api-test` 的背景图、半透明层和面板层次，加入柔和色罩、透明侧栏、半透明卡片和阴影，让壁纸在滚动、换装目标和预览区域后方保持可见。Windows 11 实测窗口和内容正常显示。
 - **v1.2.0** · 应用更名为「Camellia的图标工坊」，应用图标采用用户提供图片的透明主体。新增圆角和透明留边。已验证修边参数的保存、取消和重置，预览与 ICO 帧在同一颜色格式下像素一致，修边后的临时盘符图标可被 Windows 读取并正常复原。
 - **v1.1.0** · 已加入应用内裁剪、平移、缩放和多尺寸成品预览。Windows 11 实测通过横图导入和填满裁剪、取消编辑、保存后继续编辑、应用到测试文件夹和复原。自动检查核对了裁剪取景、透明留白和预览与 ICO 对应帧的像素。
@@ -84,3 +86,5 @@ $test.ExitCode
 便携包文件名沿用 Hanairo.exe。升级时可关闭旧版后在原位置替换；已开启的右键菜单可在设置中关闭再开启以更新显示名称。
 
 工作台壁纸素材位于 [wallpaper.jpg](src/Hanairo/Assets/wallpaper.jpg)，应用通过半透明色罩和半透明面板叠加使用，原图不会被修改。
+
+顶部横幅素材位于 [atelier.jpg](src/Hanairo/Assets/atelier.jpg)，采用用户第二张图片，并沿用左侧渐隐的横幅效果。
