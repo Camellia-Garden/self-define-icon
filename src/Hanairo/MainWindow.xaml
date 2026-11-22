@@ -11,7 +11,14 @@
             <ColumnDefinition Width="193"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Background="#FFFBFE" BorderBrush="#E9DCEC" BorderThickness="0,0,1,0" Padding="15,23,15,15">
+        <Border Grid.ColumnSpan="2" Panel.ZIndex="0">
+            <Border.Background>
+                <ImageBrush ImageSource="/Assets/wallpaper.jpg" Stretch="UniformToFill"
+                            AlignmentX="Center" AlignmentY="Center"/>
+            </Border.Background>
+        </Border>
+        <Border Grid.ColumnSpan="2" Background="#A8F8F1F8" Panel.ZIndex="1"/>
+        <Border Panel.ZIndex="2" Background="#D9FFFBFE" BorderBrush="#B8E9DCEC" BorderThickness="0,0,1,0" Padding="15,23,15,15">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="1,1,0,27">
                     <Border Background="#F6E5F4" Width="42" Height="42" CornerRadius="12">
@@ -56,11 +63,11 @@
             </DockPanel>
         </Border>
 
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Panel.ZIndex="2">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#FAF3F9" Offset="0"/>
-                    <GradientStop Color="#F3F0FC" Offset="1"/>
+                    <GradientStop Color="#80FAF3F9" Offset="0"/>
+                    <GradientStop Color="#74F3F0FC" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.RowDefinitions>
@@ -78,9 +85,9 @@
                             <Border CornerRadius="20" Padding="25,21" VerticalAlignment="Stretch">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#FFFAEAF6" Offset="0"/>
-                                        <GradientStop Color="#F8FAEAF6" Offset=".28"/>
-                                        <GradientStop Color="#B2FAEAF6" Offset=".43"/>
+                                        <GradientStop Color="#E6FAEAF6" Offset="0"/>
+                                        <GradientStop Color="#B8FAEAF6" Offset=".28"/>
+                                        <GradientStop Color="#68FAEAF6" Offset=".43"/>
                                         <GradientStop Color="#00FAEAF6" Offset=".65"/>
                                     </LinearGradientBrush>
                                 </Border.Background>
@@ -264,7 +271,7 @@
                 </Grid>
             </ScrollViewer>
 
-            <Border Grid.Row="1" Background="#FFFCFF" BorderBrush="#E9DCEC" BorderThickness="0,1,0,0" Padding="22,7">
+            <Border Grid.Row="1" Background="#D9FFFCFF" BorderBrush="#B8E9DCEC" BorderThickness="0,1,0,0" Padding="22,7">
                 <DockPanel>
                     <Button x:Name="DetailsButton" DockPanel.Dock="Right" Style="{StaticResource Quiet}" Content="查看结果"
                             Visibility="Collapsed" MinHeight="25" Padding="8,2" Click="Details_Click"/>

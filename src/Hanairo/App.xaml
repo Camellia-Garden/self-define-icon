@@ -5,8 +5,8 @@
     <Application.Resources>
         <SolidColorBrush x:Key="Ink" Color="#30243D"/>
         <SolidColorBrush x:Key="Muted" Color="#695D78"/>
-        <SolidColorBrush x:Key="Paper" Color="#FFFCFF"/>
-        <SolidColorBrush x:Key="Line" Color="#EADDED"/>
+        <SolidColorBrush x:Key="Paper" Color="#D9FFFCFF"/>
+        <SolidColorBrush x:Key="Line" Color="#B8EADDED"/>
         <SolidColorBrush x:Key="Wash" Color="#F2E9F8"/>
         <SolidColorBrush x:Key="Plum" Color="#7A4191"/>
 
@@ -25,6 +25,11 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="20"/>
             <Setter Property="Padding" Value="19"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="22" ShadowDepth="3" Opacity=".12" Color="#5A416D"/>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="{StaticResource Ink}"/>

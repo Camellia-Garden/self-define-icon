@@ -10,7 +10,7 @@
     <AssemblyTitle>Camellia的图标工坊</AssemblyTitle>
     <Product>Camellia的图标工坊</Product>
     <Description>Windows 图标换装工具</Description>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets/*" />
