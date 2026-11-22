@@ -5,8 +5,8 @@
     <Application.Resources>
         <SolidColorBrush x:Key="Ink" Color="#30243D"/>
         <SolidColorBrush x:Key="Muted" Color="#695D78"/>
-        <SolidColorBrush x:Key="Paper" Color="#D9FFFCFF"/>
-        <SolidColorBrush x:Key="Line" Color="#B8EADDED"/>
+        <SolidColorBrush x:Key="Paper" Color="#C4FFFCFF"/>
+        <SolidColorBrush x:Key="Line" Color="#A8EADDED"/>
         <SolidColorBrush x:Key="Wash" Color="#F2E9F8"/>
         <SolidColorBrush x:Key="Plum" Color="#7A4191"/>
 
@@ -27,13 +27,13 @@
             <Setter Property="Padding" Value="19"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="22" ShadowDepth="3" Opacity=".12" Color="#5A416D"/>
+                    <DropShadowEffect BlurRadius="22" ShadowDepth="3" Opacity=".10" Color="#5A416D"/>
                 </Setter.Value>
             </Setter>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="{StaticResource Ink}"/>
-            <Setter Property="Background" Value="#F7F0FA"/>
+            <Setter Property="Background" Value="#B8F7F0FA"/>
             <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontWeight" Value="Medium"/>
@@ -72,8 +72,8 @@
             <Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#82469D" Offset="0"/>
-                        <GradientStop Color="#9B4F86" Offset="1"/>
+                        <GradientStop Color="#E382469D" Offset="0"/>
+                        <GradientStop Color="#DF9B5A87" Offset="1"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
@@ -100,10 +100,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Tile" Property="Background" Value="#F8EFF8"/>
+                                <Setter TargetName="Tile" Property="Background" Value="#70F8EFFA"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Tile" Property="Background" Value="#ECDDF4"/>
+                                <Setter TargetName="Tile" Property="Background" Value="#8AECDDF4"/>
                                 <Setter Property="Foreground" Value="#6C377F"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

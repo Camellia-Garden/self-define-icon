@@ -2,7 +2,7 @@
 
 粉紫色的 Windows 图标换装工具。把文件、文件夹、快捷方式或盘符加入队列，导入一张图片或选一枚内置贴纸，一次应用到多个目标。每项换装都有复原记录。
 
-[下载 Windows x64 便携版](https://github.com/Camellia-Garden/self-define-icon/releases/download/v1.4.0/Hanairo.exe) · [发布说明](https://github.com/Camellia-Garden/self-define-icon/releases/tag/v1.4.0)
+[下载 Windows x64 便携版](https://github.com/Camellia-Garden/self-define-icon/releases/download/v1.5.0/Hanairo.exe) · [发布说明](https://github.com/Camellia-Garden/self-define-icon/releases/tag/v1.5.0)
 
 ![Camellia的图标工坊工作台](docs/preview.webp)
 
@@ -44,6 +44,8 @@
 换装资产和复原记录在 %LOCALAPPDATA%\Hanairo。复原前请保留该目录及目标路径。如果有人在工房之外修改了同一目标的图标配置，工房会保留当前内容与复原记录，并报告冲突。卸载时可先全部复原，再关闭右键菜单。
 
 ## 进度与验收
+
+- **v1.5.0** · 进一步降低导航、按钮、目标列表、拖放区域、预览卡片和状态栏的底色不透明度，让壁纸在整个工作区连续透出。保留边框、阴影和主按钮色彩以维持阅读和操作层次。项目版本元数据同步为 1.5.0。
 
 - **v1.4.0** · 顶部横幅改用用户提供的海边人物插画，保留原有左侧渐隐和透明叠层。人物与海景位于右侧，标题和导入按钮区域保持清晰。Windows 11 实测新横幅正常显示。
 

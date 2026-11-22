@@ -17,11 +17,11 @@
                             AlignmentX="Center" AlignmentY="Center"/>
             </Border.Background>
         </Border>
-        <Border Grid.ColumnSpan="2" Background="#A8F8F1F8" Panel.ZIndex="1"/>
-        <Border Panel.ZIndex="2" Background="#D9FFFBFE" BorderBrush="#B8E9DCEC" BorderThickness="0,0,1,0" Padding="15,23,15,15">
+        <Border Grid.ColumnSpan="2" Background="#7AF8F1F8" Panel.ZIndex="1"/>
+        <Border Panel.ZIndex="2" Background="#B8FFFBFE" BorderBrush="#B8E9DCEC" BorderThickness="0,0,1,0" Padding="15,23,15,15">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="1,1,0,27">
-                    <Border Background="#F6E5F4" Width="42" Height="42" CornerRadius="12">
+                    <Border Background="#A8F6E5F4" Width="42" Height="42" CornerRadius="12">
                         <Image Source="/Assets/app-logo.png" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Border>
                     <StackPanel Margin="9,2,0,0">
@@ -66,8 +66,8 @@
         <Grid Grid.Column="1" Panel.ZIndex="2">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#80FAF3F9" Offset="0"/>
-                    <GradientStop Color="#74F3F0FC" Offset="1"/>
+                    <GradientStop Color="#62FAF3F9" Offset="0"/>
+                    <GradientStop Color="#58F3F0FC" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.RowDefinitions>
@@ -78,7 +78,7 @@
             <ScrollViewer x:Name="PageScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <Grid Margin="22,20,22,17">
                     <StackPanel x:Name="WorkbenchPage">
-                        <Border CornerRadius="21" Height="200" Margin="0,0,0,16" BorderBrush="#E0CCE9" BorderThickness="1">
+                        <Border CornerRadius="21" Height="200" Margin="0,0,0,16" BorderBrush="#B8E0CCE9" BorderThickness="1">
                             <Border.Background>
                                 <ImageBrush ImageSource="/Assets/atelier.jpg" Stretch="UniformToFill" Viewbox="0,0,1,.74"/>
                             </Border.Background>
@@ -124,8 +124,8 @@
                                     <CheckBox x:Name="SyncPinCheck" Content="同时添加匹配的任务栏固定项"
                                               IsChecked="True" Margin="1,0,0,12"
                                               ToolTip="当程序路径和启动参数能唯一匹配时，将对应固定项加入可见的队列。"/>
-                                    <Border x:Name="DropHint" BorderBrush="#EADCEE" BorderThickness="1"
-                                            Background="#FBF5FC" CornerRadius="14" MinHeight="148">
+                                    <Border x:Name="DropHint" BorderBrush="#A8EADCEE" BorderThickness="1"
+                                            Background="#B8FBF5FC" CornerRadius="14" MinHeight="148">
                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12">
                                             <Image Source="/Assets/folder.png" Height="55" Width="55"/>
                                             <TextBlock Text="把目标拖到这里" FontWeight="DemiBold" HorizontalAlignment="Center"/>
@@ -136,13 +136,13 @@
                                     <ItemsControl x:Name="QueueList">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Background="#FBF5FC" BorderBrush="#EADCEE" BorderThickness="1"
+                                                <Border Background="#B8FBF5FC" BorderBrush="#A8EADCEE" BorderThickness="1"
                                                         CornerRadius="10" Padding="9,7" Margin="0,0,0,6">
                                                     <DockPanel>
                                                         <Button Content="&#xE711;" DockPanel.Dock="Right" ToolTip="移除目标"
                                                                 AutomationProperties.Name="移除目标" FontFamily="Segoe MDL2 Assets"
                                                                 Style="{StaticResource Quiet}" Padding="8,3" Click="Remove_Click"/>
-                                                        <Border DockPanel.Dock="Left" Width="34" Height="34" Background="#F1E5F8"
+                                                        <Border DockPanel.Dock="Left" Width="34" Height="34" Background="#A8F1E5F8"
                                                                 CornerRadius="9" Margin="0,0,9,0" VerticalAlignment="Center">
                                                             <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets"
                                                                        Foreground="{StaticResource Plum}" FontSize="16"
@@ -170,7 +170,7 @@
                                                 Click="Import_Click" Margin="0,-4,0,0"/>
                                         <TextBlock Text="图标预览" Style="{StaticResource Title}" VerticalAlignment="Center"/>
                                     </DockPanel>
-                                    <Border Background="#F6ECFB" BorderBrush="#EDDEF2" BorderThickness="1" CornerRadius="14" Height="91">
+                                    <Border Background="#B8F6ECFB" BorderBrush="#A8EDDEF2" BorderThickness="1" CornerRadius="14" Height="91">
                                         <Grid>
                                             <Image x:Name="IconPreview" Width="70" Height="70"
                                                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -211,18 +211,18 @@
                                     <TextBlock Text="复原记录" Style="{StaticResource Title}" VerticalAlignment="Center"/>
                                 </DockPanel>
                                 <TextBlock Text="复原到该目标第一次换装之前的图标。" Style="{StaticResource Caption}" Margin="0,0,0,16"/>
-                                <Border x:Name="HistoryHint" Background="#FAF2FB" CornerRadius="14" Padding="18">
+                                <Border x:Name="HistoryHint" Background="#B8FAF2FB" CornerRadius="14" Padding="18">
                                     <TextBlock Text="应用图标后，复原记录会出现在这里。" Style="{StaticResource Caption}"/>
                                 </Border>
                                 <ItemsControl x:Name="HistoryList">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border CornerRadius="12" Background="#FAF3FC" BorderBrush="#EDDEF2"
+                                            <Border CornerRadius="12" Background="#B8FAF3FC" BorderBrush="#A8EDDEF2"
                                                     BorderThickness="1" Padding="10" Margin="0,0,0,8">
                                                 <DockPanel>
                                                     <Button Content="复原" DockPanel.Dock="Right" Click="RestoreOne_Click" Margin="9,0,0,0"/>
                                                     <Border Width="42" Height="42" DockPanel.Dock="Left" CornerRadius="10"
-                                                            Background="#EEE2F6" Margin="0,0,10,0">
+                                                            Background="#A8EEE2F6" Margin="0,0,10,0">
                                                         <Image Source="{Binding Preview}" Width="33" Height="33"/>
                                                     </Border>
                                                     <StackPanel VerticalAlignment="Center" ToolTip="{Binding Entry.Location}">
@@ -271,7 +271,7 @@
                 </Grid>
             </ScrollViewer>
 
-            <Border Grid.Row="1" Background="#D9FFFCFF" BorderBrush="#B8E9DCEC" BorderThickness="0,1,0,0" Padding="22,7">
+            <Border Grid.Row="1" Background="#C4FFFCFF" BorderBrush="#B8E9DCEC" BorderThickness="0,1,0,0" Padding="22,7">
                 <DockPanel>
                     <Button x:Name="DetailsButton" DockPanel.Dock="Right" Style="{StaticResource Quiet}" Content="查看结果"
                             Visibility="Collapsed" MinHeight="25" Padding="8,2" Click="Details_Click"/>
