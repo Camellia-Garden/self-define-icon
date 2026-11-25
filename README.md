@@ -4,6 +4,8 @@
 
 [下载 Windows x64 便携版](https://github.com/Camellia-Garden/self-define-icon/releases/download/v1.5.0/Hanairo.exe) · [发布说明](https://github.com/Camellia-Garden/self-define-icon/releases/tag/v1.5.0)
 
+当前发布为 v1.5.0。工作台使用半透明壁纸和半透明控件，顶部横幅采用海边人物插画。最近一次 Windows 11 验证覆盖图片导入、裁剪缩放、圆角修边、盘符图标、批量应用、复原和资源管理器右键入口。
+
 ![Camellia的图标工坊工作台](docs/preview.webp)
 
 ## 怎么用
